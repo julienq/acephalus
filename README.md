@@ -1,4 +1,4 @@
-acephalus
+ACEPHALVS
 =========
 
-Interactive comic strip
+An interactive comic strip.
