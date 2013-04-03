@@ -1,16 +1,15 @@
 "use strict";
 
 var desc = [
-  [0, 1, 2, 3, 4, [5, [6, 1]]],          // strip 1 -> strip 2
-  [7, 8, 9, [10, [11, 2], [12, 3]]],     // strip 2 -> strip 3 | 4
-  [13, 14, 15, 16, 17, [18, [19, 5]]],   // strip 3 -> strip 6
-  [20, 21, 22, [23, [24, 4], [25, 7]]],  // strip 4 -> strip 5 | strip 8
-  [[10, [11, 2], [12, 3]]],              // strip 5 -> strip 3 | strip 4
-  [26, 27, 28, 28, [29, [30, 6]]],       // strip 6 -> strip 7
-  [31, 32, 33, [34, [35, 7], [36, 8]]],  // strip 7 -> strip 8 | strip 9
-  [37, 38, 39],                          // strip 8
-  [40, 41, 42, 43, 44, [45, [46, 9]]],   // strip 9 -> strip 10
-  [47]                                   // strip 10 (TBC)
+  [0, 1, 2, 3, 4, 5, [6, [7, 342, 50, 1]]],
+  [8, 9, 10, [11, [12, 0, 115, 2], [13, 342, 100, 3]]],
+  [14, 15, 16, 17, 18, 19, [20, [21, 388, 292, 5]]],
+  [22, 23, 24, [25, [26, 333, 0, 7], [27, 0, 0, 4]]],
+  [28, [11, [12, 0, 115, 2], [13, 342, 100, 3]]],
+  [29, 30, 31, 32, [33, [34, 446, 44, 6]]],
+  [35, 36, 37, [38, [39, 0, 136, 7], [40, 300, 80, 8]]],
+  [41, 42, 43, 44],
+  [45, 46, 47, 48, 49, 50]
 ];
 
 var Strip = {};
@@ -32,20 +31,29 @@ function init_strip(panels) {
 var Panel = {};
 
 Panel.show = function (target) {
-  return target.appendChild(flexo.$("div.panel", this.image.toString()));
+  return target.appendChild(flexo.$img({
+    alt: "panel",
+    src: "png/%0.png".fmt(flexo.pad(this.image.toString(), 2))
+  }));
 };
 
 var PanelChoice = Object.create(Panel);
 
 PanelChoice.show = function (target) {
   var p = Panel.show.call(this, target);
+  var div = target.appendChild(flexo.$("div.choice", p));
   this.choices.forEach(function (ch) {
-    var span = p.appendChild(flexo.$span(ch[0].toString()));
-    span.addEventListener("click", function (e) {
-      strips[ch[1]].show(target);
+    var img = div.appendChild(flexo.$img({
+      alt: "choice",
+      src: "png/%0.png".fmt(flexo.pad(ch[0].toString(), 2))
+    }));
+    img.style.left = "%0px".fmt(ch[1]);
+    img.style.top = "%0px".fmt(ch[2]);
+    img.addEventListener("click", function (e) {
+      strips[ch[3]].show(target);
     }, false);
   });
-  return p;
+  return div;
 }
 
 function init_panel(n) {
