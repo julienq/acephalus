@@ -1,5 +1,7 @@
 "use strict";
 
+// TODO strip between 6 and 7 (kick the head)
+
 var desc = [
   [0, 1, 2, 3, 4, 5, [6, [7, 342, 50, 1]]],
   [8, 9, 10, [11, [12, 0, 115, 2], [13, 342, 100, 3]]],
@@ -43,15 +45,13 @@ PanelChoice.show = function (target) {
   var p = Panel.show.call(this, target);
   var div = target.appendChild(flexo.$("div.choice", p));
   this.choices.forEach(function (ch) {
-    var img = div.appendChild(flexo.$img({
-      alt: "choice",
-      src: "png/%0.png".fmt(flexo.pad(ch[0].toString(), 2))
-    }));
-    img.style.left = "%0px".fmt(ch[1]);
-    img.style.top = "%0px".fmt(ch[2]);
-    img.addEventListener("click", function (e) {
-      strips[ch[3]].show(target);
-    }, false);
+    var a = div.appendChild(flexo.$a({ href: "?strip=%0".fmt(ch[3]) },
+        flexo.$img({
+          alt: "choice",
+          src: "png/%0.png".fmt(flexo.pad(ch[0].toString(), 2))
+        })));
+    a.style.left = "%0px".fmt(ch[1]);
+    a.style.top = "%0px".fmt(ch[2]);
   });
   return div;
 }
@@ -73,4 +73,5 @@ var strips = desc.map(function (s) {
   return init_strip(s.map(init_panel));
 });
 
-strips[0].show(document.getElementById("strip"));
+strips[parseInt(flexo.get_args({ strip: 0 }).strip, 10)]
+  .show(document.getElementById("strip"));
