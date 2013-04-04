@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO strip between 6 and 7 (kick the head)
-
 var desc = [
   [0, 1, 2, 3, 4, 5, [6, [7, 342, 50, 1]]],
   [8, 9, 10, [11, [12, 0, 115, 2], [13, 342, 100, 3]]],
