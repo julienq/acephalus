@@ -9,9 +9,10 @@ var desc = [
   [22, 23, 24, [25, [26, 333, 0, 7], [27, 0, 0, 4]]],
   [28, [11, [12, 0, 115, 2], [13, 342, 100, 3]]],
   [29, 30, 31, 32, [33, [34, 446, 44, 6]]],
-  [35, 36, 37, [38, [39, 0, 136, 7], [40, 300, 80, 8]]],
+  [35, 36, 37, [38, [39, 0, 136, 9], [40, 300, 80, 8]]],
   [41, 42, 43, 44],
-  [45, 46, 47, 48, 49, 50]
+  [45, 46, 47, 48, 49, 50],
+  [52, 53, 41, 42, 43, 44],
 ];
 
 var Strip = {};
@@ -19,7 +20,7 @@ var Strip = {};
 Strip.show = function (target) {
   flexo.remove_children(target);
   this.panels.forEach(function (panel) {
-    panel.show(target);
+    var elem = panel.show(target);
   });
   document.body.scrollTop = 0;
 };
