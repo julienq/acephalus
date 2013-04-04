@@ -1,7 +1,7 @@
 "use strict";
 
 var desc = [
-  [0, 1, 2, 3, 4, 5, [6, [7, 342, 50, 1]]],
+  [0, 1, 2, 3, 4, 5, [6, [7, 320, 32, 1]]],
   [8, 9, 10, [11, [12, 0, 115, 2], [13, 342, 100, 3]]],
   [14, 15, 16, 17, 18, 19, [20, [21, 388, 292, 5]]],
   [22, 23, 24, [25, [26, 333, 0, 7], [27, 0, 0, 4]]],
@@ -44,7 +44,7 @@ PanelChoice.show = function (target) {
   var p = Panel.show.call(this, target);
   var div = target.appendChild(flexo.$("div.choice", p));
   this.choices.forEach(function (ch) {
-    var a = div.appendChild(flexo.$a({ href: "?strip=%0".fmt(ch[3]) },
+    var a = div.appendChild(flexo.$a({ href: "#%0".fmt(ch[3]) },
         flexo.$img({
           alt: "choice",
           src: "png/%0.png".fmt(flexo.pad(ch[0].toString(), 2))
@@ -72,5 +72,11 @@ var strips = desc.map(function (s) {
   return init_strip(s.map(init_panel));
 });
 
-strips[parseInt(flexo.get_args({ strip: 0 }).strip, 10)]
-  .show(document.getElementById("strip"));
+// Show the strip given by the hash
+function show_strip() {
+  strips[flexo.clamp(parseInt(window.location.hash.substr(1), 10), 0,
+      strips.length - 1)].show(document.getElementById("strip"));
+}
+
+show_strip();
+window.addEventListener("hashchange", show_strip, false);
