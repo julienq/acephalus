@@ -5,20 +5,23 @@
     <meta charset="UTF-8">
     <style>
 
-html {
+html, body {
   min-height: 100%;
 }
 
 body {
-  min-height: 100%;
   font-family: Univers, "Helvetica Neue", Helvetica, sans-serif;
-  width: 672px;
-  margin: 16px auto;
+  margin: 0;
   background-color: #222;
   background-image: -webkit-linear-gradient(top, #444, #000);
   background-image:    -moz-linear-gradient(top, #444, #000);
   background-image:      -o-linear-gradient(top, #444, #000);
   background-image:         linear-gradient(to bottom, #444, #000);
+}
+
+#strip {
+  width: 672px;
+  margin: 16px auto;
 }
 
 #strip img {
@@ -37,6 +40,10 @@ body {
 
 #strip .choice a img {
   background: transparent;
+}
+
+.hidden {
+  display: none;
 }
 
     </style>
