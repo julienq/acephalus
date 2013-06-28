@@ -15,71 +15,49 @@ var strips = [
 
 var SRC = "png/%0.png";
 
-// Load a list of images and return the list of (possibly unloaded) elements,
-// then call f() when all images have been loaded.
-function show_images(target, images, f) {
-  var next_i = 0;
-  var queue = [];
-  var loaded = function (img, i) {
-    queue[i] = img;
-    while (i === next_i) {
-      queue[i].classList.remove("hidden");
-      ++next_i;
-      if (queue[i + 1] != null) {
-        ++i;
-      } else if (next_i === images.length) {
-        f();
+function show_images(target, images) {
+  var show = function (promise) {
+    return promise.then(function (e) {
+      console.log("Show image", e, target);
+      if (e) {
+        target.appendChild(e);
       }
+    });
+  }
+  var promises = images.map(function (n) {
+    if (Array.isArray(n)) {
+      return show_images(flexo.$("div.choice"), n);
     }
-  };
-  images.forEach(function (n, i) {
-    if (typeof n === "number") {
-      // A single image
-      var img = target.appendChild(flexo.$img({ alt: "image #%0".fmt(n),
-        class: "hidden", src: SRC.fmt(flexo.pad(n, 2)) }));
-      if (img.complete) {
-        loaded(img, i);
-      } else {
-        img.addEventListener("load", function () {
-          loaded(img, i);
-        }, false);
-      }
-    } else if (Array.isArray(n)) {
-      // An image with one or more links; first a background, then link images
-      // with position
-      var div = target.appendChild(flexo.$div({ class: "choice hidden" }));
-      show_images(div, n, function () {
-        loaded(div, i);
+    var n_ = n.n || n;
+    var p = flexo.promise_img({ src: SRC.fmt(flexo.pad(n_, 2)),
+      alt: "image #%0".fmt(n_) });
+    if (typeof n == "object") {
+      p = p.then(function (img) {
+        return flexo.$a({ href: "#%0".fmt(n.to),
+          style: "left:%0px;top:%1px".fmt(n.x || 0, n.y || 0) }, img);
       });
-    } else {
-      // A link image
-      var img = flexo.$img({ alt: "image #%0".fmt(n), class: "hidden",
-        src: SRC.fmt(flexo.pad(n.n, 2)) });
-      target.appendChild(flexo.$a({ href: "#%0".fmt(n.to),
-        style: "left:%0px;top:%1px".fmt(n.x || 0, n.y || 0) }, img));
-      if (img.complete) {
-        loaded(img, i);
-      } else {
-        img.addEventListener("load", function () {
-          loaded(img, i);
-        }, false);
-      }
     }
+    return p;
+  });
+  return new flexo.Promise().fulfill().each(promises, show).then(function () {
+    return target;
   });
 }
 
 // Show the strip given by the hash
 function show_strip() {
   var target = document.getElementById("strip");
+  var left = document.body.scrollLeft;
   document.body.scrollTop = 0;
-  flexo.remove_children(target);
+  document.body.scrollLeft = left;
+  target.innerHTML = "";
   var strip = strips[flexo.clamp(parseInt(window.location.hash.substr(1), 10),
       0, strips.length - 1)];
   if (!Array.isArray(strip)) {
     console.error("No strip to show?!");
     return;
   }
-  show_images(target, strip, flexo.nop);
+  show_images(target, strip);
 }
 
 show_strip();
